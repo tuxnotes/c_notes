@@ -1,8 +1,8 @@
 /* Tabulates values of trigonometric functions */
-/* specify the -lm option when compling with gcc */
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void tabulate(double (*f)(double), double first, double last, double incr);
 
