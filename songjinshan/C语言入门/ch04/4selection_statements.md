@@ -64,3 +64,127 @@ void foo(void)
 ```
 
 和函数的局部变量同样道理，每次进入语句块时为变量j分配存储空间，每次退出语句块是释放变量j的存储空间。语句块也构成一个作用域，语句块中的变量j在退出语句块之后就没有了，因此最后一行的printf不能打印变量j，否则编译器会报错。语句块可以用在任何允许出现语句块的地方，不一定非得用在if语句中，单独使用语句块通常是为了定义一些比函数的局部变量更"局部"的变量。
+
+## 4.2 if/else语句
+
+```c
+if (x % 2 == 0)
+    printf("x is even.\n");
+else 
+    printf("x is odd.\n");
+```
+
+这里的%是取模Modulo运算符，C语言规定%运算符的两个操作数必须是整型的。**%运算符的结果总是与被除数同号**。
+
+if或if/else可以嵌套使用：
+
+```c
+if (x > 0)
+    printf("x is positive.\n");
+else if (x < 0)
+    printf("x is negative.\n");
+else 
+    printf("x is zero.\n");
+```
+
+也可以这样：
+
+```c
+if (x > 0) {
+    printf("x is positice.\n");
+} else {
+    if (x < 0)
+        printf("x is negative.\n");
+    else
+        printf("x is zero.\n");
+}
+```
+
+## 4.3 布尔代数
+
+运算符的优先级顺序是：!高于* / %, 高于+ - , 高于> < >= <=, 高于== != , 高于&& , 高于|| , 高于=
+
+写一个控制表达式可能同时用到这些运算符中的多个，如果记不清楚运算符的优先级一定要多套括号。
+
+## 4.4 switch语句
+
+```c
+#include <stdio.h>
+
+void print_day(int day)
+{
+    switch (day) {
+        case 1:
+            printf("Monday.\n");
+            break;
+        case 2:
+            printf("Tuesday\n");
+            break;
+        case 3:
+            printf("Wednesday\n");
+            break;
+        case 4:
+            printf("Thursday\n");
+            break;
+        case 5:
+            printf("Friday\n");
+            break;
+        case 6:
+            printf("Saturday\n");
+            break;
+        case 7:
+            printf("Sunday\n");
+            break;
+        default:
+            printf("Illegal day number!\n");
+            break;
+    }
+}    
+
+int main(void)
+{
+    print_day(2);
+    return 0;
+}    
+```
+
+如果传入的参数是2，则从case 2分支开始执行，先是打印相应的信息，然后遇到break语句，它的作用是跳出整个switch语句块。
+
+C语言规定各case分支的常量表达式必须互不相同，如果控制表达式不等于任何一个常量表达式，则从default分支开始执行。通常把default分支写在最后，但不是必须的。使用switch语句要注意以下几点：
+
+- 1 case后面跟表达式的必须是常量表达式，这个值和全局变量的初始值一样，必须在编译时计算出来。
+- 2 浮点型不适合做精确比较，所以C语言规定case后面跟的必须是整型常量表达式。
+- 3 进入case后如果没有遇到break语句就会一致往下执行，后面其他case或default分支的语句也会被执行，直到遇到break或执行到整个switch语句块的末尾。通常每个case后面都要加上break语句，但有事故意不加break来利用这个特性。例如:
+
+```c
+#include <sdtio.h>
+
+void print_day(int day)
+{
+    switch(day) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            printf("Weekday\n");
+            break;
+        case 6:
+        case 7:
+            printf("Weekend.\n");
+            break;
+        default:
+            printf("Illegal day number!\n");
+            break;
+    }
+}    
+
+int main(void)
+{
+    print_day(2);
+    return 0;
+}    
+```
+
+switch语句不是必不可缺的，可以用一个或多个if...else的组合代替。但是一方面用switch语句回事代码更清晰，另一方面，有事编译器会对switch语句进行整体优化，使它比等价的if/else语句生成的指令效率跟高。
+
